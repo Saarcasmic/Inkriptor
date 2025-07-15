@@ -1,11 +1,14 @@
 # Inkriptor API
 
+<img width="1919" height="907" alt="image" src="https://github.com/user-attachments/assets/1998d2a3-849e-482a-ad1b-4be277262f8c" />
+
+
 A Django REST Framework API providing blog title generation and audio transcription services.
 
 ## 🚀 Features
 
 - **Blog Title Generation**: AI-powered title suggestions for blog content
-- **Audio Transcription**: Convert audio files to text
+- **Audio Transcription**: Convert audio files to text with MultiLingual Support
 - **Modern UI**: Clean interface with API documentation
 - **REST API**: Well-documented endpoints with browsable API interface
 
@@ -19,6 +22,9 @@ A Django REST Framework API providing blog title generation and audio transcript
 5. **Filtering**: Remove titles with repeated words/phrases and ensure natural length.
 6. **Top suggestions returned** in API response.
 
+   <img width="737" height="714" alt="image" src="https://github.com/user-attachments/assets/eee4cf49-5621-43fd-9ee8-e425eb72e2a6" />
+
+
 ### Audio Transcription with Speaker Diarization
 1. **User uploads audio file** via API (POST multipart/form-data).
 2. **Audio preprocessing**: Ensure format compatibility (ffmpeg if needed).
@@ -26,6 +32,9 @@ A Django REST Framework API providing blog title generation and audio transcript
 4. **Speaker diarization**: Segment and cluster speech by speaker using pyannote.audio (NLP-based clustering and feature extraction).
 5. **Label formatting**: Assign readable speaker labels and convert language codes to names.
 6. **Structured transcript returned** with speaker segments and language info.
+
+<img width="475" height="841" alt="image" src="https://github.com/user-attachments/assets/be2ce354-4ecf-4888-b48a-7148554ff2e6" />
+
 
 ## 📋 Prerequisites
 
@@ -170,14 +179,3 @@ Key packages and their purposes:
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 📞 Support
-
-For support:
-1. Check the troubleshooting guide
-2. Search existing issues
-3. Open a new issue with:
-   - Detailed description
-   - Steps to reproduce
-   - Expected vs actual behavior
-   - Environment details
