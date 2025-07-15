@@ -1,0 +1,223 @@
+# Inkriptor API
+
+A Django REST Framework API providing blog title generation and audio transcription services.
+
+## 🚀 Features
+
+- **Blog Title Generation**: AI-powered title suggestions for blog content
+- **Audio Transcription**: Convert audio files to text
+- **Modern UI**: Clean interface with API documentation
+- **REST API**: Well-documented endpoints with browsable API interface
+
+## 🧩 Feature Workflows
+
+### Blog Title Generation (NLP-powered)
+1. **User submits blog content** via API (POST JSON).
+2. **Text preprocessing**: Clean, tokenize, and lemmatize input using NLTK.
+3. **Keyword extraction**: Use TF-IDF to find important terms.
+4. **Topic extraction**: Identify main noun phrases/topics.
+5. **Title generation**: Combine keywords, topics, and sentence patterns to create candidate titles.
+6. **Title ranking**: Score and sort titles based on readability, keyword presence, and NLP heuristics.
+7. **Top suggestions returned** in API response.
+
+### Audio Transcription with Speaker Diarization
+1. **User uploads audio file** via API (POST multipart/form-data).
+2. **Audio preprocessing**: Ensure format compatibility (ffmpeg if needed).
+3. **Transcription**: Use Whisper model to convert speech to text and detect language.
+4. **Speaker diarization**: Segment and cluster speech by speaker using pyannote.audio (NLP-based clustering and feature extraction).
+5. **Label formatting**: Assign readable speaker labels and convert language codes to names.
+6. **Structured transcript returned** with speaker segments and language info.
+
+## 📋 Prerequisites
+
+- Python 3.8+
+- pip (Python package manager)
+- Virtual environment (recommended)
+
+## 🛠️ Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/Inkriptor.git
+cd Inkriptor
+```
+
+2. Create and activate a virtual environment:
+```bash
+# Windows
+python -m venv venv
+.\venv\Scripts\activate
+
+# Linux/MacOS
+python -m venv venv
+source venv/bin/activate
+```
+
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+4. Set up environment variables:
+Create a `.env` file in the project root with:
+```
+DEBUG=True
+SECRET_KEY=your-secret-key
+ALLOWED_HOSTS=localhost,127.0.0.1
+```
+
+5. Run migrations:
+```bash
+python manage.py migrate
+```
+
+6. Start the development server:
+```bash
+python manage.py runserver
+```
+
+The API will be available at `http://localhost:8000`
+
+## 🔌 API Endpoints
+
+### Blog Title Generation
+
+**Endpoint**: `/api/blog/suggest-title/`  
+**Method**: POST  
+**Content-Type**: application/json
+
+#### Request Format:
+```json
+{
+    "content": "Your blog post content here..."
+}
+```
+
+#### Sample Response:
+```json
+{
+    "title": "Suggested blog title",
+    "alternatives": [
+        "Alternative title 1",
+        "Alternative title 2"
+    ]
+}
+```
+
+#### cURL Example:
+```bash
+curl -X POST http://localhost:8000/api/blog/suggest-title/ \
+     -H "Content-Type: application/json" \
+     -d '{"content": "Your blog post content here..."}'
+```
+
+### Audio Transcription
+
+**Endpoint**: `/api/audio/transcribe/`  
+**Method**: POST  
+**Content-Type**: multipart/form-data
+
+#### Request Format:
+- Form data with audio file
+
+#### Sample Response:
+```json
+{
+    "text": "Transcribed text content...",
+    "duration": "1:30",
+    "language": "en"
+}
+```
+
+#### cURL Example:
+```bash
+curl -X POST http://localhost:8000/api/audio/transcribe/ \
+     -F "file=@path/to/your/audio.mp3"
+```
+
+## 🧪 Testing
+
+1. Run the test suite:
+```bash
+python manage.py test
+```
+
+2. For specific test cases:
+```bash
+python manage.py test api.tests.test_blog_title
+python manage.py test api.tests.test_audio_transcription
+```
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+1. **405 Method Not Allowed**
+   - Ensure you're using the correct HTTP method (POST) for endpoints
+   - Check Content-Type header matches the endpoint requirements
+
+2. **File Upload Issues**
+   - For audio transcription, ensure:
+     - File is in supported format (MP3, WAV, M4A)
+     - File size is under the maximum limit
+     - Using multipart/form-data content type
+
+3. **API Response Errors**
+   - Check request payload format matches documentation
+   - Verify all required fields are included
+   - Ensure valid JSON formatting for blog title requests
+
+### Debug Mode
+
+For development, enable detailed error messages in `settings.py`:
+```python
+DEBUG = True
+```
+
+## 📝 Development Guidelines
+
+- Follow PEP 8 style guide for Python code
+- Use descriptive variable names
+- Write tests for new features
+- Document API changes
+- Use meaningful commit messages
+
+## 🔐 Security Considerations
+
+- Keep `SECRET_KEY` secure and unique per deployment
+- Use environment variables for sensitive data
+- Implement rate limiting for production
+- Regular security updates
+- Validate file uploads
+
+## 📦 Dependencies
+
+Key packages and their purposes:
+- Django REST Framework: API development
+- python-dotenv: Environment configuration
+- django-cors-headers: CORS support
+- Pillow: Image processing
+- pydantic: Data validation
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit changes
+4. Push to the branch
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 📞 Support
+
+For support:
+1. Check the troubleshooting guide
+2. Search existing issues
+3. Open a new issue with:
+   - Detailed description
+   - Steps to reproduce
+   - Expected vs actual behavior
+   - Environment details

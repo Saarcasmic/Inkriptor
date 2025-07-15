@@ -1,0 +1,18 @@
+django>=4.2.0
+djangorestframework>=3.14.0
+python-dotenv>=1.0.0
+# Local transcription dependencies (CPU optimized)
+openai-whisper>=20231117  # OpenAI Whisper for transcription
+numpy>=1.24.0  # Pin numpy to 1.x version for compatibility
+torch==2.1.0  # CPU-only version of PyTorch
+torchaudio==2.1.0  # CPU-only version for audio processing
+transformers>=4.36.0  # For AI title generation
+librosa>=0.10.0  # Audio processing library
+soundfile>=0.12.0  # Audio file I/O
+python-multipart  # For handling file uploads
+django-cors-headers>=4.3.0
+pyannote.audio>=3.1.0  # Best speaker diarization library
+# Optional: For better speaker diarization (CPU only)
+speechbrain>=0.5.0  # Alternative for speaker diarization
+nltk>=3.8.1
+scikit-learn>=1.3.0

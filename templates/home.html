@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inkriptor - Audio Transcription & Blog Titles</title>
+    <!-- Add canvas-confetti library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #45a049;
+            --text-color: #333;
+            --bg-light: #f8f9fa;
+            --border-color: #eee;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background-color: var(--bg-light);
+        }
+
+        .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Main Content Styles */
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Home Page Split View */
+        .features-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        /* Documentation Styles */
+        .documentation {
+            display: none;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .documentation.active {
+            display: block;
+        }
+
+        .documentation h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .documentation .intro {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .endpoint {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+
+        .endpoint:hover {
+            transform: translateY(-5px);
+        }
+
+        .endpoint h3 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .endpoint .method {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .endpoint .route {
+            display: inline-block;
+            background: var(--bg-light);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            margin: 0.5rem 0;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .endpoint .description {
+            color: #666;
+            margin: 1rem 0;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .endpoint h4 {
+            color: #2c3e50;
+            margin: 1.5rem 0 0.5rem 0;
+            font-size: 1.2rem;
+        }
+
+        .endpoint pre {
+            background: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            border: 1px solid #e0e0e0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .endpoint code {
+            font-family: 'Courier New', monospace;
+            background: #f1f1f1;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #e83e8c;
+        }
+
+        .documentation-footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: #666;
+        }
+
+        .documentation-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .documentation-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Add styles for the endpoint icons */
+        .endpoint-icon {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+
+        /* Existing Styles */
+        .upload-form {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .upload-form input[type="file"] {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        .upload-form button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .upload-form button:hover {
+            background: var(--primary-dark);
+        }
+
+        .upload-form button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        #result.success {
+            background: #e8f5e9;
+            border: 1px solid #a5d6a7;
+            display: block;
+        }
+
+        #result.error {
+            background: #ffebee;
+            border: 1px solid #ffcdd2;
+            display: block;
+        }
+
+        .speaker {
+            margin: 10px 0;
+            padding: 10px;
+            background: var(--bg-light);
+            border-radius: 4px;
+        }
+
+        .loader-container {
+            display: none;
+            margin: 20px 0;
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .loader-text {
+            color: #2c3e50;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .loader-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Blog Title Feature Styles */
+        .blog-form {
+            margin-top: 1rem;
+        }
+
+        .blog-form textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            font-family: inherit;
+        }
+
+        .blog-form button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .features-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-brand">🚀 Inkriptor</a>
+            <div class="nav-links">
+                <a href="#" class="nav-link active" onclick="showHome(event)">Home</a>
+                <a href="#" class="nav-link" onclick="showDocs(event)">Documentation</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Home Page Split View -->
+        <div id="home-view" class="features-container">
+            <!-- Audio Transcription Feature -->
+            <div class="feature-card">
+                <h2>🎙️ Audio Transcription</h2>
+                <p>Upload your audio file and get accurate transcription with speaker diarization.</p>
+                <div class="upload-form">
+                    <form id="audioForm" enctype="multipart/form-data">
+                        <input type="file" id="audioFile" name="audio" accept="audio/*" required>
+                        <button type="submit" id="submitBtn">Transcribe Audio</button>
+                    </form>
+                    <div id="loader" class="loader-container">
+                        <div class="loader-text">Please wait while we process your audio...</div>
+                        <div class="loader-spinner"></div>
+                    </div>
+                    <div id="result"></div>
+                </div>
+            </div>
+
+            <!-- Blog Title Feature -->
+            <div class="feature-card">
+                <h2>📝 Blog Title Generator</h2>
+                <p>Generate engaging titles for your blog content using AI.</p>
+                <div class="blog-form">
+                    <form id="blogForm">
+                        <textarea 
+                            placeholder="Paste your blog content here..."
+                            required
+                        ></textarea>
+                        <button type="submit">Generate Titles</button>
+                    </form>
+                    <div id="blog-result"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documentation View -->
+        <div id="docs-view" class="documentation">
+            <h1>🚀 API Documentation</h1>
+            <p class="intro">
+                Welcome to the Inkriptor API documentation. Our API provides powerful endpoints for audio transcription 
+                and blog title generation. Below you'll find detailed information about each endpoint.
+            </p>
+            
+            <div class="endpoint">
+                <h3>
+                    <span class="endpoint-icon">🎙️</span>
+                    Audio Transcription
+                </h3>
+                <span class="method">POST</span>
+                <span class="route">/api/audio/transcribe/</span>
+                <p class="description">
+                    Upload audio files and receive accurate transcriptions with speaker diarization and language detection. 
+                    Supports multiple audio formats and automatically identifies different speakers in the conversation.
+                </p>
+                
+                <h4>Request Format</h4>
+                <pre>curl -X POST -F "audio=@your-audio-file.mp3" http://localhost:8000/api/audio/transcribe/</pre>
+                
+                <h4>Response Format</h4>
+                <pre>{
+    "text": "Complete transcription of the audio file...",
+    "speakers": [
+        {
+            "speaker": "Speaker A",
+            "text": "Hello there!",
+            "start": 0,
+            "end": 1200
+        }
+    ],
+    "language": "English"
+}</pre>
+
+                <h4>Features</h4>
+                <ul>
+                    <li>Multi-speaker detection and diarization</li>
+                    <li>Automatic language detection</li>
+                    <li>Timestamps for each speech segment</li>
+                    <li>High accuracy transcription</li>
+                </ul>
+            </div>
+
+            <div class="endpoint">
+                <h3>
+                    <span class="endpoint-icon">📝</span>
+                    Blog Title Generator
+                </h3>
+                <span class="method">POST</span>
+                <span class="route">/api/blog/suggest-title/</span>
+                <p class="description">
+                    Generate engaging and SEO-friendly title suggestions for your blog content using advanced AI. 
+                    Simply provide your blog content and receive multiple title suggestions.
+                </p>
+                
+                <h4>Request Format</h4>
+                <pre>curl -X POST \
+    -H "Content-Type: application/json" \
+    -d '{"content": "Your blog post content here..."}' \
+    http://localhost:8000/api/blog/suggest-title/</pre>
+                
+                <h4>Response Format</h4>
+                <pre>{
+    "suggestions": [
+        "First suggested title",
+        "Second suggested title",
+        "Third suggested title"
+    ]
+}</pre>
+
+                <h4>Features</h4>
+                <ul>
+                    <li>Multiple title suggestions per request</li>
+                    <li>SEO-optimized titles</li>
+                    <li>Context-aware suggestions</li>
+                    <li>Support for various content types</li>
+                </ul>
+            </div>
+
+            <div class="documentation-footer">
+                <p>Need help or have questions? Check out our 
+                    <a href="https://github.com/your-repo/Inkriptor" target="_blank">GitHub repository</a> 
+                    or <a href="#contact">contact support</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation Functions
+        function showHome(event) {
+            event.preventDefault();
+            document.getElementById('home-view').style.display = 'grid';
+            document.getElementById('docs-view').style.display = 'none';
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function showDocs(event) {
+            event.preventDefault();
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('docs-view').style.display = 'block';
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Confetti celebration function
+        function celebrateSuccess() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+
+            setTimeout(() => {
+                confetti({
+                    particleCount: 50,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 }
+                });
+            }, 250);
+
+            setTimeout(() => {
+                confetti({
+                    particleCount: 50,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 }
+                });
+            }, 400);
+        }
+
+        // Audio Form Handler
+        document.getElementById('audioForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = form.querySelector('button');
+            const resultDiv = document.getElementById('result');
+            const loaderDiv = document.getElementById('loader');
+            const fileInput = document.getElementById('audioFile');
+
+            if (!fileInput.files[0]) {
+                resultDiv.className = 'error';
+                resultDiv.textContent = 'Please select an audio file';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+            resultDiv.style.display = 'none';
+            loaderDiv.style.display = 'block';
+
+            const formData = new FormData();
+            formData.append('audio', fileInput.files[0]);
+
+            try {
+                const response = await fetch('/api/audio/transcribe/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.className = 'success';
+                    let html = '<h4>Transcription Result:</h4>';
+                    html += `<p><strong>Complete Text:</strong> ${data.text}</p>`;
+                    if (data.language) {
+                        html += `<p><strong>Language:</strong> ${data.language}</p>`;
+                    }
+                    
+                    if (data.speakers && data.speakers.length > 0) {
+                        html += '<h4>Speaker Segments:</h4>';
+                        data.speakers.forEach(speaker => {
+                            html += `<div class="speaker">
+                                <strong>${speaker.speaker}:</strong><br>
+                                "${speaker.text}"<br>
+                                <small>Time: ${(speaker.start/1000).toFixed(1)}s - ${(speaker.end/1000).toFixed(1)}s</small>
+                            </div>`;
+                        });
+                    }
+                    
+                    resultDiv.innerHTML = html;
+                    celebrateSuccess();
+                } else {
+                    resultDiv.className = 'error';
+                    resultDiv.textContent = `Error: ${data.error || 'Failed to transcribe audio'}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'error';
+                resultDiv.textContent = `Error: ${error.message}`;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Transcribe Audio';
+                loaderDiv.style.display = 'none';
+                resultDiv.style.display = 'block';
+            }
+        });
+
+        // Blog Form Handler
+        document.getElementById('blogForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = form.querySelector('button');
+            const resultDiv = document.getElementById('blog-result');
+            const content = form.querySelector('textarea').value;
+
+            if (!content.trim()) {
+                resultDiv.className = 'error';
+                resultDiv.textContent = 'Please enter some blog content';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Generating...';
+
+            try {
+                const response = await fetch('/api/blog/suggest-title/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ content })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.className = 'success';
+                    let html = '<h4>Suggested Titles:</h4><ul>';
+                    data.suggestions.forEach(title => {
+                        html += `<li>${title}</li>`;
+                    });
+                    html += '</ul>';
+                    resultDiv.innerHTML = html;
+                    celebrateSuccess();
+                } else {
+                    resultDiv.className = 'error';
+                    resultDiv.textContent = `Error: ${data.error || 'Failed to generate titles'}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'error';
+                resultDiv.textContent = `Error: ${error.message}`;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Generate Titles';
+            }
+        });
+    </script>
+</body>
+</html> 
