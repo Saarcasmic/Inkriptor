@@ -38,7 +38,7 @@ A Django REST Framework API providing blog title generation and audio transcript
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/Inkriptor.git
+git clone https://github.com/Saarcasmic/Inkriptor.git
 cd Inkriptor
 ```
 
@@ -61,9 +61,8 @@ pip install -r requirements.txt
 4. Set up environment variables:
 Create a `.env` file in the project root with:
 ```
-DEBUG=True
-SECRET_KEY=your-secret-key
-ALLOWED_HOSTS=localhost,127.0.0.1
+DJANGO_SECRET_KEY=''
+HF_AUTH_TOKEN=''
 ```
 
 5. Run migrations:
@@ -135,44 +134,6 @@ curl -X POST http://localhost:8000/api/audio/transcribe/ \
      -F "file=@path/to/your/audio.mp3"
 ```
 
-## 🧪 Testing
-
-1. Run the test suite:
-```bash
-python manage.py test
-```
-
-2. For specific test cases:
-```bash
-python manage.py test api.tests.test_blog_title
-python manage.py test api.tests.test_audio_transcription
-```
-
-## 🔍 Troubleshooting
-
-### Common Issues
-
-1. **405 Method Not Allowed**
-   - Ensure you're using the correct HTTP method (POST) for endpoints
-   - Check Content-Type header matches the endpoint requirements
-
-2. **File Upload Issues**
-   - For audio transcription, ensure:
-     - File is in supported format (MP3, WAV, M4A)
-     - File size is under the maximum limit
-     - Using multipart/form-data content type
-
-3. **API Response Errors**
-   - Check request payload format matches documentation
-   - Verify all required fields are included
-   - Ensure valid JSON formatting for blog title requests
-
-### Debug Mode
-
-For development, enable detailed error messages in `settings.py`:
-```python
-DEBUG = True
-```
 
 ## 📝 Development Guidelines
 
