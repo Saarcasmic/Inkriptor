@@ -22,7 +22,8 @@ A Django REST Framework API providing blog title generation and audio transcript
 5. **Filtering**: Remove titles with repeated words/phrases and ensure natural length.
 6. **Top suggestions returned** in API response.
 
-   <img width="737" height="714" alt="image" src="https://github.com/user-attachments/assets/eee4cf49-5621-43fd-9ee8-e425eb72e2a6" />
+<img width="734" height="700" alt="image" src="https://github.com/user-attachments/assets/f99c6662-fe8b-42ec-b7c0-97faecee38fb" />
+
 
 
 ### Audio Transcription with Speaker Diarization
