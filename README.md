@@ -11,14 +11,13 @@ A Django REST Framework API providing blog title generation and audio transcript
 
 ## 🧩 Feature Workflows
 
-### Blog Title Generation (NLP-powered)
+### Blog Title Generation (Local NLP-powered)
 1. **User submits blog content** via API (POST JSON).
-2. **Text preprocessing**: Clean, tokenize, and lemmatize input using NLTK.
-3. **Keyword extraction**: Use TF-IDF to find important terms.
-4. **Topic extraction**: Identify main noun phrases/topics.
-5. **Title generation**: Combine keywords, topics, and sentence patterns to create candidate titles.
-6. **Title ranking**: Score and sort titles based on readability, keyword presence, and NLP heuristics.
-7. **Top suggestions returned** in API response.
+2. **Text preprocessing**: Lowercase, remove punctuation, tokenize, remove stopwords, and lemmatize using NLTK.
+3. **Keyphrase extraction**: Use KeyBERT (local model) to extract top multi-word keyphrases.
+4. **Template-based title generation**: Generate titles using smart templates and extracted keyphrases (no first sentence, no repeated keywords).
+5. **Filtering**: Remove titles with repeated words/phrases and ensure natural length.
+6. **Top suggestions returned** in API response.
 
 ### Audio Transcription with Speaker Diarization
 1. **User uploads audio file** via API (POST multipart/form-data).
